@@ -66,7 +66,7 @@ def print_jpgs(cwd):
                         new_dir_path = cwd + "\\new"
                         for img in jpg_list:
                             img_pick = Image.open(cwd + "\\" + img)
-                            img_pick.save(new_dir_path + "\\" + img[:-4] + ".png")
+                            img_pick.save(new_dir_path + "\\" + img[:-4] + ".png", "PNG")
                     except PermissionError as e:
                         cprint("No permission! Stopping process.", "red")
                     break

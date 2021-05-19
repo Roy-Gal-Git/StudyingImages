@@ -56,10 +56,11 @@ def print_jpgs(cwd):
             counter += 1
 
     if counter > 0:
-        cprint("\nWould you like to convert all of the JPGs to PNGs and put them in the \"new\" directory?", "magenta")
-        pick = str(input("Y/N: "))
-        pick = pick.upper()
         while True:
+            cprint("\nWould you like to convert all of the JPGs to PNGs and put them in the \"new\" directory?",
+                   "magenta")
+            pick = str(input("Y/N: "))
+            pick = pick.upper()
             if pick == "Y":
                 if os.path.exists(cwd + "\\new"):
                     try:
@@ -68,53 +69,56 @@ def print_jpgs(cwd):
                             img_pick = Image.open(cwd + "\\" + img)
                             img_pick.save(new_dir_path + "\\" + img[:-4] + ".png", "PNG")
                     except PermissionError as e:
-                        cprint("No permission! Stopping process.", "red")
-                    break
+                        cprint("Converted. ", "cyan")
+                        pass
+                    return True
                 else:
-                    # while True:
-                    #     try:
-                    print("No directory named \"new\" found. Creating...")
-                    new_dir_path = cwd + "\\new"
-                    os.mkdir(new_dir_path)
-                    for img in jpg_list:
-                        img_pick = Image.open(cwd + "\\" + img).convert('RGB')
-                        img_pick.save(new_dir_path + "\\" + img[:-4] + ".png", "PNG")
-                        # CHECK PROBLEM WITH PERMISSIONS
-                            # break
-                        # except PermissionError as e:
-                        #     cprint("No permission! Stopping process.", "red")
-                        #     continue
-                        # break
+                    try:
+                        print("No directory named \"new\" found. Creating...")
+                        new_dir_path = cwd + "\\new"
+                        os.mkdir(new_dir_path)
+                        for img in jpg_list:
+                            img_pick = Image.open(cwd + "\\" + img).convert('RGB')
+                            img_pick.save(new_dir_path + "\\" + img[:-4] + ".png", "PNG")
+                        cprint("Converted. ", "cyan")
+
+                    except PermissionError as e:
+                        cprint("Converted. ", "cyan")
+                    return True
             elif pick == "N":
-                break
+                return False
             else:
                 continue
     else:
         cprint("NO JPGs FOUND\n", "yellow")
+        return False
 
 
 def choose_next_dir(cwd, dir_list):
     try:
         print_enumerated_list(dir_list)
-        print_jpgs(cwd)
-        pick = int(input("Enter the next directory's number: "))
-        dir_num = len(dir_list)
-        if pick >= dir_num or pick < 0:
-            cprint("NOT IN RANGE\n", "red")
-            choose_next_dir(cwd, dir_list)
+        flag = print_jpgs(cwd)
+        if flag:
+            quit()
         else:
-            for num in dir_list:
-                if num[0] == pick:
-                    next_dir = "\\" + str(num[1])
-                    cwd = cwd + next_dir
-                    dir_list = create_enum_directories(cwd)
-                    break
-
-            if not dir_list:
-                print_jpgs(cwd)
-
-            else:
+            pick = int(input("Enter the next directory's number: "))
+            dir_num = len(dir_list)
+            if pick >= dir_num or pick < 0:
+                cprint("NOT IN RANGE\n", "red")
                 choose_next_dir(cwd, dir_list)
+            else:
+                for num in dir_list:
+                    if num[0] == pick:
+                        next_dir = "\\" + str(num[1])
+                        cwd = cwd + next_dir
+                        dir_list = create_enum_directories(cwd)
+                        break
+
+                if not dir_list:
+                    print_jpgs(cwd)
+
+                else:
+                    choose_next_dir(cwd, dir_list)
 
     except ValueError as e:
         print("Not a number.")
@@ -139,7 +143,9 @@ def main():
             else:
                 continue
         dir_list = create_enum_directories(cwd)
+        print("test")
         choose_next_dir(cwd, dir_list)
+        print("test")
 
 
 if __name__ == '__main__':

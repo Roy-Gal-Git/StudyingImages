@@ -57,9 +57,9 @@ def print_jpgs(cwd):
 
     if counter > 0:
         cprint("\nWould you like to convert all of the JPGs to PNGs and put them in the \"new\" directory?", "magenta")
+        pick = str(input("Y/N: "))
+        pick = pick.upper()
         while True:
-            pick = str(input("Y/N: "))
-            pick = pick.upper()
             if pick == "Y":
                 if os.path.exists(cwd + "\\new"):
                     try:
@@ -71,22 +71,20 @@ def print_jpgs(cwd):
                         cprint("No permission! Stopping process.", "red")
                     break
                 else:
-                    while True:
-                        try:
-                            new_dir_path = cwd + "\\new"
-                            os.mkdir(new_dir_path)
-                            for img in jpg_list:
-                                img_pick = Image.open(cwd + "\\" + img)
-                                img_pick.convert('RGB')
-                                img_pick.close()
-                                img_pick = Image.open(cwd + "\\" + img)
-                                img_pick.save(new_dir_path + "\\" + img[:-4] + ".png")
-                                # CHECK PROBLEM WITH PERMISSIONS
-                            break
-                        except PermissionError as e:
-                            cprint("No permission! Stopping process.", "red")
-                            continue
-                        break
+                    # while True:
+                    #     try:
+                    print("No directory named \"new\" found. Creating...")
+                    new_dir_path = cwd + "\\new"
+                    os.mkdir(new_dir_path)
+                    for img in jpg_list:
+                        img_pick = Image.open(cwd + "\\" + img).convert('RGB')
+                        img_pick.save(new_dir_path + "\\" + img[:-4] + ".png", "PNG")
+                        # CHECK PROBLEM WITH PERMISSIONS
+                            # break
+                        # except PermissionError as e:
+                        #     cprint("No permission! Stopping process.", "red")
+                        #     continue
+                        # break
             elif pick == "N":
                 break
             else:
@@ -117,8 +115,6 @@ def choose_next_dir(cwd, dir_list):
 
             else:
                 choose_next_dir(cwd, dir_list)
-
-
 
     except ValueError as e:
         print("Not a number.")

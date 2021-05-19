@@ -143,9 +143,7 @@ def main():
             else:
                 continue
         dir_list = create_enum_directories(cwd)
-        print("test")
         choose_next_dir(cwd, dir_list)
-        print("test")
 
 
 if __name__ == '__main__':
